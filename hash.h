@@ -2,6 +2,13 @@
 #define HASH
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
+struct Hash{
+    size_t size;
+    struct Entry **entries;
+};
 
 struct Entry{
     char *key;
@@ -9,8 +16,8 @@ struct Entry{
     struct Entry *next
 };
 
-struct Entry **createHash(int size);
-int destroyHash(Entry **hash);
+struct Hash *createHash(size_t size);
+int destroyHash(Hash *hash);
 int insertEntry(char *key, char *value);
 int deleteEntry(char *key);
 char *lookUp(char *key);
