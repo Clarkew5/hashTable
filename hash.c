@@ -10,13 +10,14 @@ struct Hash *createHash(size_t size){
         printf("Calloc failed. No memory for hash.\n");
         return NULL;
     }
-
+    /*
     for(int i = 0; i < size; i++){
         (*(hash->entries + i)) = malloc(sizeof(struct Entry));
         (*(hash->entries + i))->key = NULL;
         (*(hash->entries + i))->value = NULL;
         (*(hash->entries + i))->next = NULL;
     }
+    */
 
     return hash;
 }
@@ -47,7 +48,7 @@ int hashFunction(char *key, struct Hash *hash){
 int insertEntry(char *key, char *value, struct Hash *hash){
     int index = hashFunction(key, hash);
     struct Entry *p = *(hash->entries + index);
-
+    /*
     if (p->key == NULL){ //no collision
         p->key = key;
         p->value = value;
@@ -64,7 +65,25 @@ int insertEntry(char *key, char *value, struct Hash *hash){
         p->value = value;
         p->next = NULL;
     }
+    */
 
+
+    if (p == NULL){
+        p = malloc(sizeof(struct Entry));
+        p->key = key;
+        p->value = value;
+        p->next = NULL;
+        (*(hash->entries + index)) = p;
+    }
+    else{
+        while(p->next != NULL){
+            p = p->next;
+        }
+        p->next = malloc(sizeof(struct Entry));
+        p = p->next;
+        p->key = key;
+        p->value = value;
+    }
     return 0;
 }
 
@@ -76,7 +95,7 @@ int printTable(struct Hash *hash){
     for (int i = 0; i < hash->size; i++){
         struct Entry *p = *(hash->entries + i);
         while(p != NULL){
-            printf("%s: %s ->", p->key, p->value);
+            printf("[%s]: [%s] ->", p->key, p->value);
             p = p->next;
         }
         printf("No Entry\n");
