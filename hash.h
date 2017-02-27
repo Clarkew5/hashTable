@@ -17,10 +17,10 @@ struct Entry{
 };
 
 struct Hash *createHash(size_t size);
-//int destroyHash(char *key, char *value, struct Hash *hash);
+int destroyHash(struct Hash *hash);
 int insertEntry(char *key, char *value, struct Hash *hash);
-int deleteEntry(char *key);
-char *lookUp(char *key);
+int deleteEntry(char *key, struct Hash *hash);
+char *lookUp(char *key, struct Hash *hash);
 int printTable(struct Hash *hash);
 
 #endif

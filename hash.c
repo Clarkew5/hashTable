@@ -10,28 +10,32 @@ struct Hash *createHash(size_t size){
         printf("Calloc failed. No memory for hash.\n");
         return NULL;
     }
-    /*
-    for(int i = 0; i < size; i++){
-        (*(hash->entries + i)) = malloc(sizeof(struct Entry));
-        (*(hash->entries + i))->key = NULL;
-        (*(hash->entries + i))->value = NULL;
-        (*(hash->entries + i))->next = NULL;
-    }
-    */
 
     return hash;
 }
 
-/*int destroyHash(size_t size, struct Hash *hash){
-    Entry *p = NULL;
-    for (size_t i = 0; i < size; i++){
-        p = *(hash->entries + i);
-        while (p != NULL){
-            free(p->)
+int destroyHash(struct Hash *hash){
+    struct Entry *p;
+    struct Entry *pPrev;
+    for (size_t i = 0; i < hash->size; i++){
+        pPrev = *(hash->entries + i);
+        if (pPrev == NULL){
+            free(pPrev);
+            continue;
         }
+        p = pPrev->next;
+        while (p != NULL){
+            free(pPrev);
+            pPrev = p;
+            p = p->next;
+        }
+        free(pPrev);
+        free(p);
     }
+    free(hash->entries);
+    free(hash);
     return 0;
-}*/
+}
 
 int hashFunction(char *key, struct Hash *hash){
     unsigned int index = 0;
@@ -48,25 +52,6 @@ int hashFunction(char *key, struct Hash *hash){
 int insertEntry(char *key, char *value, struct Hash *hash){
     int index = hashFunction(key, hash);
     struct Entry *p = *(hash->entries + index);
-    /*
-    if (p->key == NULL){ //no collision
-        p->key = key;
-        p->value = value;
-        p->next = NULL;
-    }
-    else{//yes collision move to end of an linked list
-        while(p->next != NULL)
-            p = p->next;
-        p->next = malloc(sizeof(struct Entry));
-        if (p->next == NULL)
-           return 1;
-        p = p->next;
-        p->key = key;
-        p->value = value;
-        p->next = NULL;
-    }
-    */
-
 
     if (p == NULL){
         p = malloc(sizeof(struct Entry));
@@ -87,15 +72,30 @@ int insertEntry(char *key, char *value, struct Hash *hash){
     return 0;
 }
 
-int deleteEntry(char *key);
+int deleteEntry(char *key, struct Hash *hash);
 
-char *lookUp(char *key);
+char *lookUp(char *key, struct Hash *hash){
+    int index = hashFunction(key, hash);
+    struct Entry *p = *(hash->entries + index);
+    if (p == NULL) //no value at index
+        return "No entry by that key\n";
+    else if (strcmp(p->key, key) == 0)//no colission
+        return p->value;
+    else{ //collision
+        while (p != NULL){
+            if (strcmp(p->key, key) == 0)
+                return p->value;
+            p = p->next;
+        }
+    }
+    return "No entry by that key\n";
+}
 
 int printTable(struct Hash *hash){
     for (int i = 0; i < hash->size; i++){
         struct Entry *p = *(hash->entries + i);
         while(p != NULL){
-            printf("[%s]: [%s] ->", p->key, p->value);
+            printf("[%s]:[%s]->", p->key, p->value);
             p = p->next;
         }
         printf("No Entry\n");

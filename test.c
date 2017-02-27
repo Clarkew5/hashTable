@@ -20,6 +20,10 @@ int main(void){
     printf("added entries\n");
 
     printTable(hash);
-
+    printf("\n%s: %s\n", "leer", lookUp("leer", hash));
+    printf("%s: %s\n", "run", lookUp("run", hash));
+    printf("%s: %s\n", "sleep", lookUp("sleep", hash));
+    printf("%s: %s\n", "sadness", lookUp("sadness", hash));
+    destroyHash(hash);
     return 0;
 }
