@@ -2,7 +2,7 @@
 
 int main(void){
     printf("making hash\n");
-    struct Hash *hash = createHash(7);
+    struct Hash *hash = createHash(3);
     printf("made hash\n");
 
     printf("adding enteries\n");
@@ -17,6 +17,8 @@ int main(void){
     insertEntry("leer", "spanish to read", hash);
     insertEntry("escuchar", "spanis to listen", hash);
     
+    insertEntry("muggle", "someone who doesn't know what geocaching is", hash);
+
     printf("added entries\n");
 
     printTable(hash);
@@ -24,6 +26,11 @@ int main(void){
     printf("%s: %s\n", "run", lookUp("run", hash));
     printf("%s: %s\n", "sleep", lookUp("sleep", hash));
     printf("%s: %s\n", "sadness", lookUp("sadness", hash));
+
+    deleteEntry("leer", hash);
+    deleteEntry("run", hash);
+    printf("\n");
+    printTable(hash);
     destroyHash(hash);
     return 0;
 }

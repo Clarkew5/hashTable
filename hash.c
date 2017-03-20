@@ -53,16 +53,24 @@ int insertEntry(char *key, char *value, struct Hash *hash){
     int index = hashFunction(key, hash);
     struct Entry *p = *(hash->entries + index);
 
-    if (p == NULL){
+    if (p == NULL){//no collision
         p = malloc(sizeof(struct Entry));
         p->key = key;
         p->value = value;
         p->next = NULL;
         (*(hash->entries + index)) = p;
     }
-    else{
+    else{//collision
         while(p->next != NULL){
+            if (strcmp(p->key, key) == 0){
+                printf("Key already exists. Nothing changed.\n");
+                return 1;
+            }
             p = p->next;
+        }
+        if (strcmp(p->key, key) == 0){
+            printf("Key already exists. Nothing changed.\n");
+            return 1;
         }
         p->next = malloc(sizeof(struct Entry));
         p = p->next;
@@ -72,7 +80,33 @@ int insertEntry(char *key, char *value, struct Hash *hash){
     return 0;
 }
 
-int deleteEntry(char *key, struct Hash *hash);
+int deleteEntry(char *key, struct Hash *hash){
+    int index = hashFunction(key, hash);
+    struct Entry *p = *(hash->entries + index);
+    if (p == NULL){ //no value at index
+        printf("No entry by that key\n");
+        return 1;
+    }
+    else if (strcmp(p->key, key) == 0){//no colission
+        *(hash->entries + index) = p->next;
+        free(p);
+        return 0;
+    }
+    else{ //collision
+        struct Entry *pPrev = *(hash->entries + index);
+        p = p->next;
+        while (p != NULL){
+            if (strcmp(p->key, key) == 0){
+                pPrev->next = p->next;
+                free(p);
+                return 0;
+            }
+            p = p->next;
+        }
+    }
+    printf("No entry by that key\n");
+    return 0;
+}
 
 char *lookUp(char *key, struct Hash *hash){
     int index = hashFunction(key, hash);
